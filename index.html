@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173c35">
+  <title>Lab 05 | University Result Portal</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #173c35;
+      --muted: #5d706a;
+      --paper: #f4f6ef;
+      --surface: #fffefa;
+      --line: #dce4d8;
+      --green: #176b52;
+      --green-soft: #e4f1e8;
+      --coral: #a94032;
+      --coral-soft: #fff0ea;
+      --gold: #d79a36;
+      --shadow: 0 12px 30px rgba(23, 60, 53, .07);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 8% 2%, rgba(215, 154, 54, .14), transparent 25rem),
+        linear-gradient(135deg, #f7f7ef 0%, #edf4ee 55%, #f6f2e8 100%);
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      line-height: 1.5;
+    }
+
+    .page-shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+    .masthead { padding: 46px 0 28px; border-bottom: 1px solid rgba(23, 60, 53, .16); }
+    .eyebrow { margin: 0 0 9px; color: var(--green); font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 760px; margin-bottom: 10px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.25rem, 6vw, 4.1rem); font-weight: 500; line-height: 1.04; }
+    .intro { max-width: 700px; margin: 0; color: var(--muted); font-size: 1.05rem; }
+    main { padding: 28px 0 64px; }
+    .lab-section { padding: 26px 0 30px; border-bottom: 1px solid rgba(23, 60, 53, .16); }
+    .section-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+    .section-number { color: var(--gold); font-size: .85rem; font-weight: 800; }
+    h2 { margin-bottom: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.8rem; font-weight: 500; }
+    h3 { margin-bottom: 12px; font-size: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      animation: rise-in .35s ease both;
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .card-title { margin-bottom: 9px; font-weight: 750; }
+    .muted { color: var(--muted); }
+    .course-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .course-list li { padding: 5px 9px; border: 1px solid var(--line); border-radius: 4px; background: #f5f7f1; font-size: .88rem; }
+    .student-card { border-top: 3px solid var(--green); }
+    .result-card { border-left: 3px solid var(--green); }
+    .result-card.failed { border-left-color: var(--coral); }
+    .result-card h3 { margin-bottom: 4px; }
+    .result-meta { margin-bottom: 12px; color: var(--muted); font-size: .88rem; }
+    .result-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
+    .result-stats div { padding: 8px; border-radius: 4px; background: #f3f6f0; }
+    .result-stats dt { color: var(--muted); font-size: .72rem; }
+    .result-stats dd { margin: 2px 0 0; font-weight: 750; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); font-size: .78rem; font-weight: 800; }
+    .pill.failed { background: var(--coral-soft); color: var(--coral); }
+    .control-row { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 14px 0; }
+    label { display: grid; gap: 5px; color: var(--muted); font-size: .84rem; font-weight: 700; }
+    input { width: min(100%, 290px); min-height: 42px; padding: 9px 11px; border: 1px solid #b8c9bf; border-radius: 5px; background: #fff; color: var(--ink); font: inherit; }
+    input:focus-visible, button:focus-visible { outline: 3px solid rgba(215, 154, 54, .55); outline-offset: 2px; }
+    button { min-height: 42px; padding: 9px 15px; border: 0; border-radius: 5px; background: var(--green); color: #fff; cursor: pointer; font: inherit; font-weight: 750; }
+    button:hover { background: #105640; }
+    button.secondary { border: 1px solid var(--line); background: #fffefa; color: var(--ink); }
+    button.secondary:hover { background: #edf4ee; }
+    .message { min-height: 1.5em; margin: 10px 0; color: var(--muted); }
+    .message.error { color: var(--coral); font-weight: 750; }
+    .message.success { color: var(--green); font-weight: 750; }
+    .workflow-log { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+    .workflow-log li { padding: 10px 12px; border-left: 3px solid var(--gold); background: rgba(255, 254, 250, .8); }
+    .summary-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+    .summary-item { padding: 14px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); }
+    .summary-item strong { display: block; font-family: Georgia, "Times New Roman", serif; font-size: 1.8rem; font-weight: 500; }
+    .summary-item span { color: var(--muted); font-size: .82rem; }
+    .divider-title { margin: 22px 0 8px; font-size: .92rem; }
+    footer { padding: 18px 0 28px; color: var(--muted); font-size: .83rem; }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 720px) {
+      .grid, .grid.three { grid-template-columns: 1fr; }
+      .masthead { padding-top: 34px; }
+      .lab-section { padding: 22px 0; }
+    }
+    @media (max-width: 420px) {
+      .page-shell { width: min(100% - 24px, 1120px); }
+      .card { padding: 15px; }
+      .result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .summary-item { padding: 10px; }
+      .summary-item strong { font-size: 1.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="masthead">
+      <p class="eyebrow">Web Development · Lab 05</p>
+      <h1>University Result Portal</h1>
+      <p class="intro">A working demonstration of modern JavaScript, from course enrollment and modules to callback workflows, Promises, and student results.</p>
+    </header>
+
+    <main>
+      <section class="lab-section" aria-labelledby="task-one-title">
+        <div class="section-heading"><span class="section-number">01</span><h2 id="task-one-title">Course enrollment · ES6</h2></div>
+        <div id="task-one-output" class="grid" aria-live="polite"></div>
+      </section>
+
+      <section class="lab-section" aria-labelledby="task-two-title">
+        <div class="section-heading"><span class="section-number">02</span><h2 id="task-two-title">Student utilities · modules</h2></div>
+        <p id="department-name" class="eyebrow"></p>
+        <div id="task-two-output" class="grid" aria-live="polite"></div>
+      </section>
+
+      <section class="lab-section" aria-labelledby="task-three-title">
+        <div class="section-heading"><span class="section-number">03</span><h2 id="task-three-title">Online examination · callbacks</h2></div>
+        <p class="muted">The nested callback sequence runs once on page load. Use the controls to test error-first verification with a valid and an empty roll number.</p>
+        <div class="control-row">
+          <button id="valid-workflow-button" type="button">Test valid roll number</button>
+          <button id="empty-workflow-button" class="secondary" type="button">Test empty roll number</button>
+        </div>
+        <ol id="workflow-log" class="workflow-log" aria-live="polite"></ol>
+      </section>
+
+      <section class="lab-section" aria-labelledby="task-four-title">
+        <div class="section-heading"><span class="section-number">04</span><h2 id="task-four-title">University result portal · async</h2></div>
+
+        <h3 class="divider-title">Promise chain</h3>
+        <form id="promise-search-form" class="control-row">
+          <label>Roll number
+            <input id="promise-roll-number" name="rollNumber" value="U2025001" autocomplete="off" required>
+          </label>
+          <button type="submit">Search with Promise</button>
+        </form>
+        <p id="promise-search-message" class="message" aria-live="polite"></p>
+        <div id="promise-result" class="grid"></div>
+
+        <h3 class="divider-title">Async / await search</h3>
+        <form id="async-search-form" class="control-row">
+          <label>Roll number
+            <input id="async-roll-number" name="rollNumber" placeholder="For example, U2025001" autocomplete="off" required>
+          </label>
+          <button type="submit">Search result</button>
+        </form>
+        <p id="async-search-message" class="message" aria-live="polite"></p>
+        <div id="async-result" class="grid"></div>
+
+        <h3 class="divider-title">All student results</h3>
+        <button id="load-all-button" type="button">Load All Results</button>
+        <p id="all-results-message" class="message" aria-live="polite"></p>
+        <div id="all-results" class="grid three"></div>
+        <div id="result-summary" class="summary-strip" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>Lab 05 · JavaScript language features and asynchronous workflows</footer>
+  </div>
+  <script type="module" src="./lab05.js"></script>
+</body>
+</html>
